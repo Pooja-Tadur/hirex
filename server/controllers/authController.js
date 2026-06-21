@@ -117,10 +117,11 @@ export const login = async (req, res) => {
     }
     const token = generateToken(user._id);
     res.cookie('token', token, {
-      httpOnly: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000
-    });
-
+  httpOnly: true,
+  secure: true,
+  sameSite: 'none',
+  maxAge: 7 * 24 * 60 * 60 * 1000
+});
     // Return full user object including all profile fields
     const fullUser = await User.findById(user._id).select(userFields);
     res.status(200).json({ success: true, user: fullUser });
@@ -130,7 +131,12 @@ export const login = async (req, res) => {
 };
 
 export const logout = async (req, res) => {
-  res.cookie('token', '', { maxAge: 0 });
+  res.cookie('token', '', {
+  httpOnly: true,
+  secure: true,
+  sameSite: 'none',
+  maxAge: 0
+});
   res.status(200).json({ success: true, message: 'Logged out successfully' });
 };
 
