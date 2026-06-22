@@ -124,7 +124,7 @@ const SalaryInsights = () => {
 
         <div className="mt-10 p-5 rounded-2xl text-center" style={{ background: 'rgba(124,58,237,0.06)', border: '1px solid rgba(124,58,237,0.15)' }}>
           <p className="text-purple-300 text-sm">
-            💡 Data is calculated live from {data ? (data.byRole?.reduce((sum, r) => sum + r.count, 0) || 0) : 0} active job listings on HireX.
+            💡 Data is calculated live from {data ? (data.byRole?.reduce((sum, r) => sum + r.count, 0) || 0) : 0} active job listings on MploNow.
           </p>
         </div>
       </div>

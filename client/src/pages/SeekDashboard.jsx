@@ -327,7 +327,7 @@ const SeekDashboard = () => {
                         {applications.filter(a => a.status === 'Shortlisted').length > 0
                           ? `🎯 You have ${applications.filter(a => a.status === 'Shortlisted').length} shortlisted application${applications.filter(a => a.status === 'Shortlisted').length > 1 ? 's' : ''}. Prioritise interview preparation now using the AI Interview Prep feature on those job pages.`
                           : applications.filter(a => a.status === 'Reviewed').length > 0
-                          ? `⚡ Your application was reviewed — stay active on HireX, update your profile skills, and use the AI Resume Grader to strengthen your next application.`
+                          ? `⚡ Your application was reviewed — stay active on MployNow, update your profile skills, and use the AI Resume Grader to strengthen your next application.`
                           : applications.filter(a => a.status === 'Pending').length >= 3
                           ? `📊 You have ${applications.filter(a => a.status === 'Pending').length} pending applications. While you wait, use the AI Resume Grader to get instant ATS feedback.`
                           : `🚀 Apply to more jobs to increase your chances. Use the AI Job Match score to find roles where you have the strongest fit.`}

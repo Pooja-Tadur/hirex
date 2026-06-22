@@ -25,13 +25,13 @@ export const forgotPassword = async (req, res) => {
     });
 
     await transporter.sendMail({
-      from: `"HireX" <${process.env.EMAIL_USER}>`,
+      from: `"MployNow" <${process.env.EMAIL_USER}>`,
       to: user.email,
-      subject: 'Reset your HireX password',
+      subject: 'Reset your MployNow password',
       html: `
         <div style="background:#020817;padding:40px;font-family:sans-serif;color:white;">
           <h2 style="color:#60a5fa;">Reset Your Password</h2>
-          <p>Click the button below to reset your HireX password. This link expires in 30 minutes.</p>
+          <p>Click the button below to reset your MployNow password. This link expires in 30 minutes.</p>
           <a href="${resetUrl}" style="display:inline-block;margin-top:16px;padding:12px 24px;background:linear-gradient(135deg,#3b82f6,#7c3aed);color:white;text-decoration:none;border-radius:8px;font-weight:bold;">Reset Password</a>
           <p style="margin-top:24px;color:#94a3b8;font-size:12px;">If you didn't request this, you can safely ignore this email.</p>
         </div>

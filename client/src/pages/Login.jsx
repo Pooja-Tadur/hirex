@@ -74,7 +74,7 @@ const Login = () => {
           </div>
 
           <p className="text-gray-500 text-xs mt-10">
-            © 2025 HireX. All rights reserved.
+            © 2025 MployNow. All rights reserved.
           </p>
         </div>
       </div>

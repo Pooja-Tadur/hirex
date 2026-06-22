@@ -230,7 +230,7 @@ export const chatReply = async (req, res) => {
     const historyText = (history || []).slice(-6)
       .map(h => `${h.role === 'user' ? 'User' : 'Assistant'}: ${h.content}`).join('\n');
 
-    const prompt = `You are HireX Assistant, a friendly career & job-search helper inside a job portal called HireX. Help with resume tips, interview prep, and job search strategy. Keep replies short (2-4 sentences) and practical. Don't invent specific job listings you don't have.
+    const prompt = `You are MployNow Assistant, a friendly career & job-search helper inside a job portal called MployNow. Help with resume tips, interview prep, and job search strategy. Keep replies short (2-4 sentences) and practical. Don't invent specific job listings you don't have.
 
 ${historyText ? 'Conversation so far:\n' + historyText + '\n' : ''}
 User: ${message}
