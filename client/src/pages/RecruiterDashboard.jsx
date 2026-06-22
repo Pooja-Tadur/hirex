@@ -29,6 +29,7 @@ const RecruiterDashboard = () => {
   const [loadingApplicants, setLoadingApplicants] = useState(false);
   const [draggedId, setDraggedId] = useState(null);
   const [dragOverColumn, setDragOverColumn] = useState(null);
+  const [updatingId, setUpdatingId] = useState(null);
 
   useEffect(() => {
     fetchStats();
@@ -63,6 +64,7 @@ const RecruiterDashboard = () => {
   };
 
   const updateStatus = async (appId, status) => {
+    setUpdatingId(appId);
     try {
       await axios.put(`${API}/applications/${appId}/status`, { status }, { withCredentials: true });
       setApplicants(prev => prev.map(a => a._id === appId ? { ...a, status } : a));
@@ -70,6 +72,8 @@ const RecruiterDashboard = () => {
       fetchStats();
     } catch {
       toast.error('Failed to update status');
+    } finally {
+      setUpdatingId(null);
     }
   };
 
@@ -296,8 +300,19 @@ const RecruiterDashboard = () => {
                               style={{
                                 background: showBlind ? 'rgba(139,92,246,0.06)' : 'rgba(255,255,255,0.04)',
                                 border: showBlind ? '1px solid rgba(139,92,246,0.2)' : '1px solid rgba(255,255,255,0.08)',
-                                opacity: draggedId === app._id ? 0.4 : 1
+                                opacity: draggedId === app._id ? 0.4 : 1,
+                                position: 'relative'
                               }}>
+
+                              {updatingId === app._id && (
+                                <div className="absolute inset-0 rounded-xl flex items-center justify-center z-10"
+                                  style={{background: 'rgba(2,8,23,0.75)', backdropFilter: 'blur(2px)'}}>
+                                  <div className="flex flex-col items-center gap-2">
+                                    <div className="w-5 h-5 border-2 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
+                                    <span className="text-xs text-blue-400 font-medium">Updating...</span>
+                                  </div>
+                                </div>
+                              )}
 
                               <div className="flex items-center gap-2 mb-2">
                                 {showBlind ? (
