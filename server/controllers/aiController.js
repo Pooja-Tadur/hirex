@@ -6,7 +6,7 @@ import { createWorker } from 'tesseract.js';
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
-
+import mammoth from 'mammoth';
 const require = createRequire(import.meta.url);
 const pdfParse = require('pdf-parse');
 
@@ -89,36 +89,28 @@ const isHtmlBuffer = (buffer, contentType) => {
   );
 };
 
-const fetchResumeBuffer = async (resumeUrl) => {
-  if (!resumeUrl.includes('drive.google.com')) {
-    const res = await fetch(resumeUrl);
-    if (!res.ok) throw new Error('FETCH_FAILED');
-    const buffer = Buffer.from(await res.arrayBuffer());
-    const contentType = res.headers.get('content-type') || '';
-    if (isHtmlBuffer(buffer, contentType)) throw new Error('GOT_HTML');
-    return buffer;
-  }
+const extractTextFromResume = async (buffer, resumeUrl, contentType) => {
+  const urlLower = (resumeUrl || '').toLowerCase();
+  const ct = (contentType || '').toLowerCase();
+  const isDocx = urlLower.endsWith('.docx') || ct.includes('officedocument.wordprocessingml');
 
-  const fileId = extractDriveFileId(resumeUrl);
-  if (!fileId) throw new Error('INVALID_DRIVE_URL');
-
-  const attempts = [
-    `https://drive.google.com/uc?export=download&id=${fileId}&confirm=t`,
-    `https://drive.usercontent.google.com/download?id=${fileId}&export=download&authuser=0&confirm=t`,
-    `https://drive.google.com/uc?id=${fileId}&export=download&confirm=t`,
-  ];
-
-  for (const url of attempts) {
+  if (isDocx) {
+    console.log('📄 Detected DOCX file');
     try {
-      const res = await fetch(url, {
-        headers: { 'User-Agent': 'Mozilla/5.0', 'Accept': 'application/pdf,*/*' }
-      });
-      const buffer = Buffer.from(await res.arrayBuffer());
-      const contentType = res.headers.get('content-type') || '';
-      if (!isHtmlBuffer(buffer, contentType) && buffer.length > 1000) return buffer;
-    } catch (e) { continue; }
+      const result = await mammoth.extractRawText({ buffer });
+      const text = result.value?.trim();
+      if (text && text.length > 50) {
+        console.log('✅ DOCX text extracted, length:', text.length);
+        return text;
+      }
+    } catch (e) {
+      console.log('DOCX parse failed:', e.message);
+    }
+    return '';
   }
-  throw new Error('GOT_HTML');
+
+  // Default: treat as PDF (handles both text PDFs and scanned PDFs via OCR)
+  return await extractTextFromPDF(buffer);
 };
 
 export const gradeResume = async (req, res) => {
@@ -132,7 +124,9 @@ export const gradeResume = async (req, res) => {
 
     let buffer;
     try {
-      buffer = await fetchResumeBuffer(user.resume);
+      const fetched = await fetchResumeBuffer(user.resume);
+      var buffer = fetched.buffer;
+      var contentType = fetched.contentType;
     } catch (fetchErr) {
       if (fetchErr.message === 'GOT_HTML' || fetchErr.message === 'INVALID_DRIVE_URL') {
         return res.status(400).json({
@@ -144,7 +138,7 @@ export const gradeResume = async (req, res) => {
       });
     }
 
-    const resumeText = await extractTextFromPDF(buffer);
+    const resumeText = await extractTextFromResume(buffer, user.resume, contentType);
 
     if (!resumeText || resumeText.trim().length < 50) {
       return res.status(400).json({
