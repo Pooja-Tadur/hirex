@@ -19,12 +19,10 @@ app.use(cors({
     'http://localhost:5173',
     'http://192.168.1.3:5173',
     'https://hirex-phi.vercel.app',
-    'https://hirex-temp.vercel.app',
     /\.vercel\.app$/
   ],
   credentials: true
 }));
-
 app.use('/api/auth', authRoutes);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/applications', applicationRoutes);
