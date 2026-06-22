@@ -7,69 +7,16 @@ import fs from 'fs';
 import path from 'path';
 import os from 'os';
 import mammoth from 'mammoth';
+
 const require = createRequire(import.meta.url);
 const pdfParse = require('pdf-parse');
 
-// Extract text from any PDF — text-based first, OCR fallback
-const extractTextFromPDF = async (buffer) => {
-  // Step 1: Try normal text extraction
-  try {
-    const data = await pdfParse(buffer);
-    const text = data.text?.trim();
-    if (text && text.length > 50) {
-      console.log('✅ Text extracted directly, length:', text.length);
-      return text;
-    }
-  } catch (e) {
-    console.log('Direct parse failed:', e.message);
-  }
-
-  // Step 2: OCR fallback using tesseract on raw buffer
-  console.log('🔍 Falling back to OCR...');
-  try {
-    // Save buffer to temp file
-    const tmpDir = os.tmpdir();
-    const tmpPdf = path.join(tmpDir, `resume_${Date.now()}.pdf`);
-    const tmpPng = path.join(tmpDir, `resume_${Date.now()}.png`);
-    fs.writeFileSync(tmpPdf, buffer);
-
-    // Convert PDF to image using pdf-poppler
-    const poppler = require('pdf-poppler');
-    const opts = {
-      format: 'png',
-      out_dir: tmpDir,
-      out_prefix: path.basename(tmpPng, '.png'),
-      page: 1,
-      scale: 2048,
-    };
-
-    await poppler.convert(tmpPdf, opts);
-
-    // Find the generated image
-    const files = fs.readdirSync(tmpDir).filter(f =>
-      f.startsWith(path.basename(tmpPng, '.png')) && f.endsWith('.png')
-    );
-
-    if (files.length === 0) throw new Error('No image generated from PDF');
-
-    const imagePath = path.join(tmpDir, files[0]);
-
-    // Run OCR
-    const worker = await createWorker('eng');
-    const { data } = await worker.recognize(imagePath);
-    await worker.terminate();
-
-    // Cleanup temp files
-    try { fs.unlinkSync(tmpPdf); } catch {}
-    try { fs.unlinkSync(imagePath); } catch {}
-
-    const text = data.text?.trim();
-    console.log('✅ OCR text length:', text?.length);
-    return text || '';
-  } catch (ocrErr) {
-    console.error('OCR failed:', ocrErr.message);
-    return '';
-  }
+const isHtmlBuffer = (buffer, contentType) => {
+  return (
+    contentType.includes('text/html') ||
+    buffer.slice(0, 30).toString().toLowerCase().includes('<!doctype') ||
+    buffer.slice(0, 30).toString().toLowerCase().includes('<html')
+  );
 };
 
 const extractDriveFileId = (url) => {
@@ -81,12 +28,77 @@ const extractDriveFileId = (url) => {
   return null;
 };
 
-const isHtmlBuffer = (buffer, contentType) => {
-  return (
-    contentType.includes('text/html') ||
-    buffer.slice(0, 30).toString().toLowerCase().includes('<!doctype') ||
-    buffer.slice(0, 30).toString().toLowerCase().includes('<html')
-  );
+const fetchResumeBuffer = async (resumeUrl) => {
+  if (!resumeUrl.includes('drive.google.com')) {
+    const res = await fetch(resumeUrl);
+    if (!res.ok) throw new Error('FETCH_FAILED');
+    const buffer = Buffer.from(await res.arrayBuffer());
+    const contentType = res.headers.get('content-type') || '';
+    console.log('Resume fetch status:', res.status, 'Content-Type:', contentType, 'Size:', buffer.length);
+    if (isHtmlBuffer(buffer, contentType)) throw new Error('GOT_HTML');
+    return { buffer, contentType };
+  }
+
+  const fileId = extractDriveFileId(resumeUrl);
+  if (!fileId) throw new Error('INVALID_DRIVE_URL');
+
+  const attempts = [
+    `https://drive.google.com/uc?export=download&id=${fileId}&confirm=t`,
+    `https://drive.usercontent.google.com/download?id=${fileId}&export=download&authuser=0&confirm=t`,
+    `https://drive.google.com/uc?id=${fileId}&export=download&confirm=t`,
+  ];
+
+  for (const url of attempts) {
+    try {
+      const res = await fetch(url, {
+        headers: { 'User-Agent': 'Mozilla/5.0', 'Accept': 'application/pdf,*/*' }
+      });
+      const buffer = Buffer.from(await res.arrayBuffer());
+      const contentType = res.headers.get('content-type') || '';
+      if (!isHtmlBuffer(buffer, contentType) && buffer.length > 1000) return { buffer, contentType };
+    } catch (e) { continue; }
+  }
+  throw new Error('GOT_HTML');
+};
+
+const extractTextFromPDF = async (buffer) => {
+  try {
+    const data = await pdfParse(buffer);
+    const text = data.text?.trim();
+    if (text && text.length > 50) {
+      console.log('✅ Text extracted directly, length:', text.length);
+      return text;
+    }
+  } catch (e) {
+    console.log('Direct parse failed:', e.message);
+  }
+
+  console.log('🔍 Falling back to OCR...');
+  try {
+    const pdfImgConvert = require('pdf-img-convert');
+    const outputImages = await pdfImgConvert.convert(buffer, { width: 2048 });
+
+    if (!outputImages || outputImages.length === 0) {
+      throw new Error('No image generated from PDF');
+    }
+
+    const tmpDir = os.tmpdir();
+    const imagePath = path.join(tmpDir, `resume_${Date.now()}.png`);
+    fs.writeFileSync(imagePath, outputImages[0]);
+
+    const worker = await createWorker('eng');
+    const { data } = await worker.recognize(imagePath);
+    await worker.terminate();
+
+    try { fs.unlinkSync(imagePath); } catch {}
+
+    const text = data.text?.trim();
+    console.log('✅ OCR text length:', text?.length);
+    return text || '';
+  } catch (ocrErr) {
+    console.error('OCR failed:', ocrErr.message);
+    return '';
+  }
 };
 
 const extractTextFromResume = async (buffer, resumeUrl, contentType) => {
@@ -109,7 +121,6 @@ const extractTextFromResume = async (buffer, resumeUrl, contentType) => {
     return '';
   }
 
-  // Default: treat as PDF (handles both text PDFs and scanned PDFs via OCR)
   return await extractTextFromPDF(buffer);
 };
 
@@ -122,9 +133,11 @@ export const gradeResume = async (req, res) => {
       });
     }
 
-    let buffer;
+    let buffer, contentType;
     try {
-      const { buffer, contentType } = await fetchResumeBuffer(user.resume);
+      const fetched = await fetchResumeBuffer(user.resume);
+      buffer = fetched.buffer;
+      contentType = fetched.contentType;
     } catch (fetchErr) {
       if (fetchErr.message === 'GOT_HTML' || fetchErr.message === 'INVALID_DRIVE_URL') {
         return res.status(400).json({
@@ -140,7 +153,7 @@ export const gradeResume = async (req, res) => {
 
     if (!resumeText || resumeText.trim().length < 50) {
       return res.status(400).json({
-        message: '❌ Could not extract text from your resume even with OCR. Please ensure your PDF is not password-protected and re-upload.'
+        message: '❌ Could not extract text from your resume. Please ensure your PDF is not password-protected and re-upload.'
       });
     }
 
@@ -230,6 +243,7 @@ Assistant:`;
     res.status(500).json({ message: 'AI assistant unavailable right now.' });
   }
 };
+
 export const interviewPrep = async (req, res) => {
   try {
     const { jobId } = req.body;
