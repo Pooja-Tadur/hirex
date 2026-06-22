@@ -52,7 +52,7 @@ export const sendStatusEmail = async (applicantEmail, applicantName, jobTitle, c
 
         <div style="background:linear-gradient(135deg,#1e3a5f,#2d1b69);border-radius:16px 16px 0 0;padding:40px;text-align:center;">
           <h1 style="color:white;margin:0;font-size:28px;font-weight:800;">
-            Job<span style="color:#60a5fa;">Portal</span>
+            Mploy<span style="color:#60a5fa;">Now</span>
           </h1>
           <p style="color:rgba(255,255,255,0.6);margin:8px 0 0;font-size:14px;">Your Career Platform</p>
         </div>
@@ -83,8 +83,8 @@ export const sendStatusEmail = async (applicantEmail, applicantName, jobTitle, c
 
         <div style="background:#0a0f1a;border-radius:0 0 16px 16px;padding:24px;text-align:center;border:1px solid rgba(255,255,255,0.06);">
           <p style="color:#475569;font-size:13px;margin:0;">
-            You received this email because you applied for a job on JobPortal.<br/>
-            © 2025 HireX. All rights reserved.
+            You received this email because you applied for a job on MployNow.<br/>
+            © 2025 MployNow. All rights reserved.
           </p>
         </div>
 
@@ -94,7 +94,7 @@ export const sendStatusEmail = async (applicantEmail, applicantName, jobTitle, c
   `;
 
   await transporter.sendMail({
-    from: '"HireX" <' + process.env.EMAIL_USER + '>',
+    from: '"MployNow" <' + process.env.EMAIL_USER + '>',
     to: applicantEmail,
     subject: info.subject,
     html

@@ -1,3 +1,5 @@
+import AnimatedBackground from '../components/AnimatedBackground';
+
 const About = () => {
   const team = [
     { name: 'Rahul Sharma', role: 'CEO & Founder', initial: 'R' },
@@ -15,35 +17,25 @@ const About = () => {
 
   return (
     <div className="min-h-screen relative text-white" style={{background: '#020817'}}>
+      <AnimatedBackground />
+
       <div className="fixed inset-0 -z-10">
         <img
-          src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1920&auto=format&fit=crop"
+          src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1920&auto=format&fit=crop"
           alt=""
-          className="w-full h-full object-cover opacity-15"
+          className="w-full h-full object-cover opacity-10"
         />
-        <div className="absolute inset-0" style={{background: 'linear-gradient(360deg, rgba(2,8,23,0.8) 0%, #020817 100%)'}}></div>
+        <div className="absolute inset-0" style={{background: 'linear-gradient(180deg, rgba(2,8,23,0.85) 0%, #020817 100%)'}}></div>
       </div>
 
-      <section className="py-20 px-6 text-center relative overflow-hidden z-10">
-        <div className="absolute top-0 left-1/4 w-96 h-96 rounded-full opacity-10 blur-3xl pointer-events-none"
-          style={{background: 'radial-gradient(circle, #3b82f6, transparent)'}}></div>
-        <div className="max-w-3xl mx-auto relative z-10">
-          <span className="inline-block text-blue-400 text-sm font-semibold tracking-widest uppercase mb-4">
-            About Us
-          </span>
+      <section className="py-20 px-6 text-center relative z-10">
+        <div className="max-w-3xl mx-auto">
+          <span className="inline-block text-blue-400 text-sm font-semibold tracking-widest uppercase mb-4">About Us</span>
           <h1 className="text-5xl font-black font-display text-white mb-6 leading-tight">
-            We Connect <span style={{
-              background: 'linear-gradient(90deg, #60a5fa, #a78bfa)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent'
-            }}>Talent</span> With <span style={{
-              background: 'linear-gradient(90deg, #a78bfa, #60a5fa)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent'
-            }}>Opportunity</span>
+            We Connect <span style={{background: 'linear-gradient(90deg, #60a5fa, #a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'}}>Talent</span> With <span style={{background: 'linear-gradient(90deg, #a78bfa, #60a5fa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'}}>Opportunity</span>
           </h1>
           <p className="text-gray-400 text-lg leading-relaxed">
-            HireX is India's fastest growing job platform, helping freshers and experienced professionals find their dream careers. We believe everyone deserves a job they love.
+            MployNow is India's fastest growing AI-powered job platform, helping freshers and experienced professionals find their dream careers. We believe everyone deserves a job they love.
           </p>
         </div>
       </section>
@@ -83,7 +75,7 @@ const About = () => {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-black font-display text-white mb-4">Meet Our Team</h2>
-            <p className="text-gray-400">The people behind HireX</p>
+            <p className="text-gray-400">The people behind MployNow</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {team.map((member, i) => (

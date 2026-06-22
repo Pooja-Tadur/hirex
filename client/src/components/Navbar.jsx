@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Logo from './Logo';
+
 const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -14,29 +15,27 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="sticky top-0 z-50"
-      style={{background: 'rgba(2,8,23,0.95)', borderBottom: '1px solid rgba(255,255,255,0.08)', backdropFilter: 'blur(10px)'}}>
-      <div className="px-6 py-4 flex justify-between items-center max-w-7xl mx-auto">
+    <nav className="sticky top-0 z-50 px-6 py-4"
+      style={{background: 'rgba(2,8,23,0.95)', borderBottom: '1px solid rgba(255,255,255,0.08)', backdropFilter: 'blur(12px)'}}>
+      <div className="max-w-7xl mx-auto flex items-center justify-between">
 
-        {/* Logo */}
-       <Link to="/">
-  <Logo />
-</Link>
+        <Link to="/" onClick={() => setMenuOpen(false)}>
+          <Logo size="md" />
+        </Link>
 
-        {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-8 text-gray-400 text-sm font-medium">
-          <Link to="/jobs" className="hover:text-white transition">Browse Jobs</Link>
-          <Link to="/companies" className="hover:text-white transition">Companies</Link>
-          <Link to="/about" className="hover:text-white transition">About</Link>
+        <div className="hidden md:flex items-center gap-8">
+          <Link to="/jobs" className="text-gray-300 hover:text-white text-sm transition">Browse Jobs</Link>
+          <Link to="/companies" className="text-gray-300 hover:text-white text-sm transition">Companies</Link>
+          <Link to="/salary-insights" className="text-gray-300 hover:text-white text-sm transition">Salary Insights</Link>
+          <Link to="/about" className="text-gray-300 hover:text-white text-sm transition">About</Link>
         </div>
 
-        {/* Desktop auth buttons */}
-        <div className="hidden md:flex items-center gap-4">
+        <div className="hidden md:flex items-center gap-3">
           {user ? (
             <>
-              <span className="text-gray-300 text-sm">
-                Hi, <span className="font-semibold text-white">{user.name}</span>
-                <span className="ml-2 text-xs px-2 py-1 rounded-full"
+              <span className="text-gray-400 text-sm">
+                Hi, <span className="text-white font-semibold">{user.name}</span>
+                <span className="ml-2 text-xs px-2 py-0.5 rounded-full"
                   style={{
                     background: user.role === 'recruiter' ? 'rgba(168,85,247,0.15)' : 'rgba(59,130,246,0.15)',
                     color: user.role === 'recruiter' ? '#c084fc' : '#60a5fa',
@@ -45,10 +44,11 @@ const Navbar = () => {
                   {user.role}
                 </span>
               </span>
-              <Link to="/dashboard"
-                className="text-sm text-gray-400 hover:text-white transition">
+              <button onClick={() => navigate('/dashboard')}
+                className="px-4 py-2 rounded-lg text-sm font-semibold text-blue-400 transition"
+                style={{background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)'}}>
                 Dashboard
-              </Link>
+              </button>
               <button onClick={handleLogout}
                 className="px-4 py-2 rounded-lg text-sm font-semibold text-red-400 transition"
                 style={{background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)'}}>
@@ -58,77 +58,68 @@ const Navbar = () => {
           ) : (
             <>
               <Link to="/login"
-                className="text-gray-400 hover:text-white text-sm font-medium transition">
+                className="px-4 py-2 rounded-lg text-sm font-semibold text-gray-300 hover:text-white transition">
                 Login
               </Link>
               <Link to="/register"
-                className="px-4 py-2 rounded-lg text-sm font-semibold text-white transition"
-                style={{background: 'linear-gradient(135deg, #3b82f6, #7c3aed)'}}>
+                className="px-5 py-2 rounded-lg text-sm font-bold text-white transition"
+                style={{background: 'linear-gradient(135deg, #3b82f6, #7c3aed)', boxShadow: '0 4px 15px rgba(59,130,246,0.3)'}}>
                 Get Started
               </Link>
             </>
           )}
         </div>
 
-        {/* Mobile hamburger */}
-        <button
-          onClick={() => setMenuOpen(!menuOpen)}
-          className="md:hidden flex flex-col gap-1.5 p-2"
-          aria-label="Toggle menu">
-          <span className="block w-6 h-0.5 bg-white transition-all"
-            style={{transform: menuOpen ? 'rotate(45deg) translate(4px, 4px)' : 'none'}}></span>
-          <span className="block w-6 h-0.5 bg-white transition-all"
-            style={{opacity: menuOpen ? 0 : 1}}></span>
-          <span className="block w-6 h-0.5 bg-white transition-all"
-            style={{transform: menuOpen ? 'rotate(-45deg) translate(4px, -4px)' : 'none'}}></span>
+        <button className="md:hidden text-gray-400 hover:text-white transition"
+          onClick={() => setMenuOpen(!menuOpen)}>
+          <div className="w-6 flex flex-col gap-1.5">
+            <span className={`block h-0.5 bg-current transition-all ${menuOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
+            <span className={`block h-0.5 bg-current transition-all ${menuOpen ? 'opacity-0' : ''}`}></span>
+            <span className={`block h-0.5 bg-current transition-all ${menuOpen ? '-rotate-45 -translate-y-2' : ''}`}></span>
+          </div>
         </button>
       </div>
 
-      {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden px-6 pb-6 space-y-3"
-          style={{borderTop: '1px solid rgba(255,255,255,0.06)'}}>
-          <Link to="/jobs" onClick={() => setMenuOpen(false)}
-            className="block py-3 text-gray-300 hover:text-white text-sm transition">
-            Browse Jobs
-          </Link>
-          <Link to="/companies" onClick={() => setMenuOpen(false)}
-            className="block py-3 text-gray-300 hover:text-white text-sm transition">
-            Companies
-          </Link>
-          <Link to="/about" onClick={() => setMenuOpen(false)}
-            className="block py-3 text-gray-300 hover:text-white text-sm transition">
-            About
-          </Link>
-          <Link to="/salary-insights" className="text-gray-300 hover:text-white transition">
-  Salary Insights
-</Link>
-
+        <div className="md:hidden mt-4 pb-4 space-y-2"
+          style={{borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '16px'}}>
+          {[
+            { to: '/jobs', label: 'Browse Jobs' },
+            { to: '/companies', label: 'Companies' },
+            { to: '/salary-insights', label: 'Salary Insights' },
+            { to: '/about', label: 'About' },
+          ].map(link => (
+            <Link key={link.to} to={link.to}
+              onClick={() => setMenuOpen(false)}
+              className="block px-4 py-2 text-gray-300 hover:text-white text-sm transition rounded-lg hover:bg-white/5">
+              {link.label}
+            </Link>
+          ))}
           {user ? (
             <>
               <Link to="/dashboard" onClick={() => setMenuOpen(false)}
-                className="block py-3 text-gray-300 hover:text-white text-sm transition">
+                className="block px-4 py-2 text-blue-400 text-sm transition rounded-lg"
+                style={{background: 'rgba(59,130,246,0.1)'}}>
                 Dashboard
               </Link>
               <button onClick={handleLogout}
-                className="w-full py-3 rounded-xl text-sm font-semibold text-red-400 text-left transition"
-                style={{background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', padding: '12px 16px'}}>
+                className="w-full text-left px-4 py-2 text-red-400 text-sm transition rounded-lg"
+                style={{background: 'rgba(239,68,68,0.1)'}}>
                 Logout
               </button>
             </>
           ) : (
-            <div className="flex gap-3 pt-2">
+            <>
               <Link to="/login" onClick={() => setMenuOpen(false)}
-                className="flex-1 py-3 rounded-xl text-sm font-semibold text-center text-gray-300 transition"
-                style={{background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)'}}>
+                className="block px-4 py-2 text-gray-300 text-sm rounded-lg hover:bg-white/5">
                 Login
               </Link>
               <Link to="/register" onClick={() => setMenuOpen(false)}
-                className="flex-1 py-3 rounded-xl text-sm font-semibold text-center text-white transition"
+                className="block px-4 py-2 text-white text-sm font-bold rounded-lg text-center"
                 style={{background: 'linear-gradient(135deg, #3b82f6, #7c3aed)'}}>
                 Get Started
               </Link>
-            </div>
+            </>
           )}
         </div>
       )}

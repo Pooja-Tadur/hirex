@@ -6,7 +6,7 @@ const API = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 const AIChatbot = () => {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { role: 'assistant', content: "Hi! I'm your HireX career assistant. Ask me about resumes, interviews, or job search tips. 👋" }
+    { role: 'assistant', content: "Hi! I'm your MployNow career assistant. Ask me about resumes, interviews, or job search tips. 👋" }
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -49,7 +49,7 @@ const AIChatbot = () => {
           <div className="px-4 py-3 flex items-center gap-2" style={{ background: 'linear-gradient(135deg, #3b82f6, #7c3aed)' }}>
             <span className="text-lg">🤖</span>
             <div>
-              <p className="text-white font-bold text-sm">HireX Assistant</p>
+              <p className="text-white font-bold text-sm">MployNow Assistant</p>
               <p className="text-blue-100 text-xs">AI-powered career help</p>
             </div>
           </div>

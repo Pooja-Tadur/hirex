@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import AnimatedBackground from '../components/AnimatedBackground';
 
 const stats = [
   { number: '10,000+', label: 'Jobs Posted' },
@@ -29,18 +30,8 @@ const Home = () => {
 
   return (
     <div className="min-h-screen relative text-white" style={{background: '#020817'}}>
+      <AnimatedBackground />
 
-      {/* Page-wide subtle background */}
-      <div className="fixed inset-0 -z-10">
-        <img
-          src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?q=80&w=1920&auto=format&fit=crop"
-          alt=""
-          className="w-full h-full object-cover opacity-[0.06]"
-        />
-        <div className="absolute inset-0" style={{background: 'linear-gradient(180deg, rgba(2,8,23,0.9) 0%, #020817 100%)'}}></div>
-      </div>
-
-      {/* Hero Section with background image */}
       <section className="relative overflow-hidden py-20 md:py-32 px-6">
         <img
           src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?q=80&w=1920&auto=format&fit=crop"
@@ -50,13 +41,10 @@ const Home = () => {
         <div className="absolute inset-0"
           style={{background: 'linear-gradient(180deg, rgba(2,8,23,0.55) 0%, rgba(2,8,23,0.8) 60%, #020817 100%)'}}>
         </div>
-        <div className="absolute inset-0"
-          style={{background: 'linear-gradient(135deg, rgba(59,130,246,0.15) 0%, transparent 50%, rgba(124,58,237,0.2) 100%)'}}>
-        </div>
 
         <div className="max-w-5xl mx-auto text-center relative z-10">
           <span className="inline-block text-blue-300 text-xs md:text-sm font-medium px-4 py-2 rounded-full mb-6 glass-card">
-            🚀 #1 HireX for Fresh Graduates
+            🚀 #1 MployNow for Fresh Graduates
           </span>
 
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-display font-black leading-tight mb-6">
@@ -71,18 +59,11 @@ const Home = () => {
             Connect with top companies, apply to thousands of jobs, and take the next step in your career journey.
           </p>
 
-          {/* Search Bar */}
           <div className="flex flex-col sm:flex-row gap-3 max-w-2xl mx-auto mb-10 p-2 rounded-2xl glass-card">
-            <input
-              type="text"
-              placeholder="Job title, skills or company..."
-              className="flex-1 px-4 py-3 rounded-xl text-white placeholder-gray-400 focus:outline-none bg-transparent"
-            />
-            <input
-              type="text"
-              placeholder="Location..."
-              className="sm:w-40 px-4 py-3 rounded-xl text-white placeholder-gray-400 focus:outline-none bg-transparent"
-            />
+            <input type="text" placeholder="Job title, skills or company..."
+              className="flex-1 px-4 py-3 rounded-xl text-white placeholder-gray-400 focus:outline-none bg-transparent" />
+            <input type="text" placeholder="Location..."
+              className="sm:w-40 px-4 py-3 rounded-xl text-white placeholder-gray-400 focus:outline-none bg-transparent" />
             <Link to="/jobs"
               className="px-8 py-3 rounded-xl font-semibold text-white text-center transition-all"
               style={{background: 'linear-gradient(135deg, #3b82f6, #7c3aed)', boxShadow: '0 4px 15px rgba(59,130,246,0.3)'}}>
@@ -90,7 +71,6 @@ const Home = () => {
             </Link>
           </div>
 
-          {/* CTA Buttons */}
           {!user ? (
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/register"
@@ -113,7 +93,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Stats */}
       <section className="py-12 px-6 relative z-10"
         style={{borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.02)'}}>
         <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
@@ -126,7 +105,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Job Categories */}
       <section className="py-16 md:py-20 px-6 relative z-10">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-10">
@@ -155,7 +133,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* How it Works */}
       <section className="relative py-16 md:py-20 px-6 overflow-hidden z-10">
         <img
           src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=1920&auto=format&fit=crop"
@@ -181,13 +158,12 @@ const Home = () => {
         </div>
       </section>
 
-      {/* CTA Banner */}
       <section className="py-16 md:py-20 px-6 relative z-10">
         <div className="max-w-3xl mx-auto text-center rounded-3xl p-8 md:p-12 tilt-3d"
           style={{background: 'linear-gradient(135deg, rgba(59,130,246,0.15), rgba(124,58,237,0.15))', border: '1px solid rgba(59,130,246,0.3)'}}>
           <h2 className="text-2xl md:text-4xl font-display font-black mb-4">Ready to Start Your Journey?</h2>
           <p className="text-gray-400 mb-8 text-sm md:text-base">
-            Join thousands of professionals who found their dream job through HireX
+            Join thousands of professionals who found their dream job through MployNow
           </p>
           <Link to="/register"
             className="inline-block px-8 py-4 rounded-xl font-semibold text-lg transition-all"
@@ -197,14 +173,13 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="px-6 py-8 text-center text-gray-500 text-sm relative z-10"
         style={{borderTop: '1px solid rgba(255,255,255,0.06)'}}>
         <div className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <span className="text-xl font-display font-black text-white">
-            Hire<span className="text-blue-500">X</span>
+            Mploy<span className="text-blue-400">Now</span>
           </span>
-          <p>© 2025 HireX. Built with MERN Stack.</p>
+          <p>© 2025 MployNow. Built with MERN Stack + AI.</p>
           <div className="flex gap-6 text-gray-500">
             <Link to="/about" className="hover:text-white transition">About</Link>
             <Link to="/companies" className="hover:text-white transition">Companies</Link>
@@ -212,7 +187,6 @@ const Home = () => {
           </div>
         </div>
       </footer>
-
     </div>
   );
 };
