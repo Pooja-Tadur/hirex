@@ -124,9 +124,7 @@ export const gradeResume = async (req, res) => {
 
     let buffer;
     try {
-      const fetched = await fetchResumeBuffer(user.resume);
-      var buffer = fetched.buffer;
-      var contentType = fetched.contentType;
+      const { buffer, contentType } = await fetchResumeBuffer(user.resume);
     } catch (fetchErr) {
       if (fetchErr.message === 'GOT_HTML' || fetchErr.message === 'INVALID_DRIVE_URL') {
         return res.status(400).json({
