@@ -13,12 +13,13 @@ const getTransporter = () => {
 
   transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',   // Explicit host instead of service:'gmail' — more reliable on Render
-    port: 465,
-    secure: true,             // SSL on port 465
+    port: 587,
+    secure: false,             // SSL on port 465
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
     },
+    family:4,
     tls: {
       rejectUnauthorized: false, // Prevents TLS cert errors on Render
     },
