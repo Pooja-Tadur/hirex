@@ -112,7 +112,7 @@ const RecruiterDashboard = () => {
       <nav className="sticky top-0 z-50 px-8 py-4 flex justify-between items-center flex-wrap gap-3"
         style={{background: 'rgba(2,8,23,0.95)', borderBottom: '1px solid rgba(255,255,255,0.08)', backdropFilter: 'blur(10px)'}}>
         <span className="text-2xl font-black font-display text-white cursor-pointer" onClick={() => navigate('/')}>
-          Hire<span className="text-blue-400">X</span>
+          Mploy<span className="text-blue-400">Now</span>
         </span>
         <div className="flex items-center gap-4 flex-wrap">
           <span className="text-gray-400 text-sm">

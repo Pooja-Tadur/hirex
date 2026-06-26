@@ -54,7 +54,7 @@ const Register = () => {
             Faster
           </h1>
           <p className="text-gray-200 text-lg max-w-md mb-8">
-            Join 50,000+ professionals who found their perfect job through HireX.
+            Join 50,000+ professionals who found their perfect job through MployNow.
           </p>
 
           <div className="grid grid-cols-2 gap-3 mb-6">
@@ -90,7 +90,7 @@ const Register = () => {
             </div>
           </div>
 
-          <p className="text-gray-500 text-xs mt-10">© 2025 HireX. All rights reserved.</p>
+          <p className="text-gray-500 text-xs mt-10">© 2025 MployNow. All rights reserved.</p>
         </div>
       </div>
 
