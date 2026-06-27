@@ -1,10 +1,20 @@
-import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 import User from '../models/User.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// ✅ Gmail SMTP transporter (works for ALL users)
+const transporter = nodemailer.createTransport({
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: false,
+  family: 4, // ✅ Forces IPv4 — fixes Render timeout
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
 
 export const forgotPassword = async (req, res) => {
   try {
@@ -21,9 +31,9 @@ export const forgotPassword = async (req, res) => {
 
     const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
 
-    await resend.emails.send({
-      from: 'MployNow <onboarding@resend.dev>',
-      to: 'poojatadur2005@gmail.com',
+    await transporter.sendMail({
+      from: `"MployNow" <${process.env.EMAIL_USER}>`,
+      to: user.email, // ✅ sends to ANY user's email
       subject: 'Reset your MployNow password',
       html: `
         <div style="background:#020817;padding:40px;font-family:sans-serif;color:white;">
@@ -38,7 +48,7 @@ export const forgotPassword = async (req, res) => {
     res.status(200).json({ message: 'If that email exists, a reset link has been sent.' });
   } catch (error) {
     console.error('Forgot password error:', error.message);
-    res.status(500).json({ message: 'Failed to send reset email' });
+    res.status(500).json({ message: 'Failed to send reset email. Please try again.' });
   }
 };
 
@@ -63,6 +73,7 @@ export const resetPassword = async (req, res) => {
 
     res.status(200).json({ message: 'Password reset successfully' });
   } catch (error) {
+    console.error('Reset password error:', error.message);
     res.status(500).json({ message: 'Failed to reset password' });
   }
 };
