@@ -1,20 +1,10 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';  // ← back to Resend SDK
 import User from '../models/User.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 
-// ✅ Gmail SMTP transporter (works for ALL users)
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 587,
-  secure: false,
-  family: 4, // ✅ Forces IPv4 — fixes Render timeout
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const forgotPassword = async (req, res) => {
   try {
@@ -31,9 +21,9 @@ export const forgotPassword = async (req, res) => {
 
     const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
 
-    await transporter.sendMail({
-      from: `"MployNow" <${process.env.EMAIL_USER}>`,
-      to: user.email, // ✅ sends to ANY user's email
+    await resend.emails.send({
+      from: 'MployNow <onboarding@resend.dev>',
+      to: 'poojatadur2005@gmail.com', // ← Resend free tier only sends to YOUR email
       subject: 'Reset your MployNow password',
       html: `
         <div style="background:#020817;padding:40px;font-family:sans-serif;color:white;">
