@@ -1,5 +1,4 @@
 import { Resend } from 'resend';
-import nodemailer from 'nodemailer';
 import User from '../models/User.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -23,17 +22,8 @@ export const forgotPassword = async (req, res) => {
     const frontendUrl = (process.env.FRONTEND_URL || 'http://localhost:5173').replace(/\/$/, '');
     const resetUrl = `${frontendUrl}/reset-password/${resetToken}`;
 
-    // ✅ Gmail via Nodemailer — works for ALL users, no domain needed
-    const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
-
-    await transporter.sendMail({
-      from: `"MployNow" <${process.env.EMAIL_USER}>`,
+    const { error } = await resend.emails.send({
+      from: 'MployNow <noreply@mploynow.abrdns.com>',
       to: user.email,
       subject: '🔐 Reset your MployNow password',
       html: `
@@ -48,7 +38,14 @@ export const forgotPassword = async (req, res) => {
       `,
     });
 
+    if (error) {
+      console.error('Resend error:', error);
+      return res.status(500).json({ message: 'Failed to send reset email. Please try again.' });
+    }
+
+    console.log(`✅ Password reset email sent to: ${user.email}`);
     return res.status(200).json({ message: 'If that email exists, a reset link has been sent.' });
+
   } catch (error) {
     console.error('Forgot password error:', error.message);
     return res.status(500).json({ message: 'Failed to send reset email. Please try again.' });
