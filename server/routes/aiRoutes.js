@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post('/grade-resume', protect, gradeResume);
 router.post('/semantic-match', protect, semanticMatch);
-router.post('/chat', protect, chatReply);
+router.post('/chat', chatReply);  // ✅ No login required
 router.post('/interview-prep', protect, interviewPrep);
 
 export default router;
