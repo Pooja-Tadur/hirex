@@ -26,13 +26,14 @@ export const forgotPassword = async (req, res) => {
     // ✅ Gmail via Nodemailer — works for ALL users, no domain needed
     const transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
-      port: 587,
-      secure: false,
+      port: 465,
+      secure: true,
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
-      tls: { rejectUnauthorized: false, family: 4 },
+      tls: { rejectUnauthorized: false }, 
+      socketOptions: { family: 4 },
     });
 
     await transporter.sendMail({
