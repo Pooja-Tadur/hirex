@@ -29,7 +29,7 @@ export const sendStatusEmail = async (applicantEmail, applicantName, jobTitle, c
 
   try {
     await resend.emails.send({
-      from: 'MployNow <noreply@mploynow.abrdns.com>',
+      from: 'MployNow <onboarding@resend.dev>',
       to: applicantEmail,
       subject: info.subject,
       html: `

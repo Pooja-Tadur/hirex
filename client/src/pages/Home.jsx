@@ -1,27 +1,14 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import AnimatedBackground from '../components/AnimatedBackground';
-import { useState , useEffect} from React and axios
-import React from 'react';
-const API = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-const [stats, setStats] = useState([
-  { number: '...', label: 'Jobs Posted' },
-  { number: '...', label: 'Job Seekers' },
-  { number: '...', label: 'Companies' },
-  { number: '...', label: 'Hired Successfully' },
-]);
 
-useEffect(() => {
-  axios.get(`${API}/jobs?limit=1`).then(res => {
-    const total = res.data.total || 0;
-    setStats([
-      { number: total + '+', label: 'Jobs Posted' },
-      { number: '50,000+', label: 'Job Seekers' },   // keep fake — no user count endpoint
-      { number: '5,000+', label: 'Companies' },       // keep fake — no company count endpoint
-      { number: '8,000+', label: 'Hired Successfully' }, // keep fake
-    ]);
-  }).catch(() => {});
-}, []);
+const stats = [
+  { number: '10,000+', label: 'Jobs Posted' },
+  { number: '50,000+', label: 'Job Seekers' },
+  { number: '5,000+', label: 'Companies' },
+  { number: '8,000+', label: 'Hired Successfully' },
+];
+
 const categories = [
   { icon: '💻', title: 'Technology', count: '2,341 jobs' },
   { icon: '📊', title: 'Finance', count: '1,872 jobs' },
